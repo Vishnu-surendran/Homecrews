@@ -18,14 +18,14 @@ function Navbarpage() {
     <div className='w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
       <div className='px-2 flex justify-between items-center w-full h-full'>
         <div className='flex items-center'>
-          <h1 className=' font-bold mr-4 sm:text-3xl'>HomeCrews</h1>
+          <Link to="/"> <h1 className=' font-bold mr-4 sm:text-3xl'>HomeCrews</h1></Link>
           <ul className='hidden md:flex'>
-            <li >
-              Home
-            </li>
-            <li>
-              About
-            </li>
+           
+            <Link to="/"><li className='border-b-2 border-zinc-300 w-full'>
+         Home
+        </li></Link>
+        
+        
             <Link to="/services"><li className='border-b-2 border-zinc-300 w-full'>
          Services
         </li></Link>

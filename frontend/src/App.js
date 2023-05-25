@@ -31,6 +31,13 @@ import Userprofile from './Layouts/Userlayouts/Profile/Userprofile';
 import Sample from './Layouts/Sample';
 import Successpage from './Layouts/Userlayouts/Success/Successpage';
 import Bookings from './Layouts/Adminlayouts/bookings/Bookings';
+import login from "./Protectedroutes/User/login"
+import User from './Protectedroutes/User/userroutes';
+import Workerauthorize from './Protectedroutes/Workerroutes/Workerauth';
+import Workerloginauth from './Protectedroutes/Workerroutes/workerloginauth';
+import Adminlogin from './Protectedroutes/Admins/Adminlogin';
+import Admin from './Protectedroutes/Admins/Adminroutes';
+import Userlogin from './Protectedroutes/User/login';
 function App() {
   const dispatch = useDispatch()
 /*   const navigate=useNavigate() */
@@ -57,41 +64,40 @@ function App() {
     errorElement:<Errorpage/>,
     children: [
       {
-        index: true, element: <Home />
-      }, {path:'workerlogin',element: <Workerlogin/>},
+        index: true, element:<User><Home /></User> 
+      }, {path:'workerlogin',element:<Workerloginauth><Workerlogin/></Workerloginauth> },
   /*     {path:'api/user/paymentverification',element: <Successpage/>} */
       {path:'sample',element: <Sample/>},
-      {path:'profile',element: <Userprofile/>,loader:userProfile},
+      {path:'profile',element: <User><Userprofile/></User>,loader:userProfile},
       {path:'workerregister',element: <Workerregister/> ,loader:homeserviceList},
        {path:'worker/forgotpassword',element: <Requestpassword/> },
        {path:'worker/resetpassword/:id',element: <Resetpassword/>},
-      { path: '/signup', element: <Signupform /> },
-      { path: 'services', element: <Services /> ,loader:homeserviceList},
-      {path:"workers/:id",element:<Serviceworkers/>,loader:WorkersList},
-      { path: 'login', element: <Loginform /> },
+      { path: '/signup', element:<Userlogin><Signupform /></Userlogin>  },
+      { path: 'services', element:<User><Services /></User>  ,loader:homeserviceList},
+      {path:"workers/:id",element:<User><Serviceworkers/></User>,loader:WorkersList},
+      { path: 'login', element: <Userlogin><Loginform /></Userlogin> },
       { path: 'forgotpassword', element: <Forgotpassword/> },
       { path: 'resetpassword/:id', element: <Resetpassword/> },
       { path: '/worker',
     children:[
-      {index:true,element:<Workerstatus/>,loader:workerProfile},
-      {path:'profile',element: <Workerprofile/>,loader:workerProfile},
-           {path:'profile',element: <Workerprofile/>},
-           {path:'works',element: <Workerduty/>,loader:workerProfile},
-           {path:'messages',element: <Workermessages/>,loader:workerProfile},
-           {path:"payment",element:<Workerpayment/> ,loader:workerProfile}
+      {index:true,element:<Workerauthorize><Workerstatus/></Workerauthorize>,loader:workerProfile},
+      {path:'profile',element: <Workerauthorize><Workerprofile/></Workerauthorize>,loader:workerProfile},
+           {path:'works',element: <Workerauthorize><Workerduty/></Workerauthorize>,loader:workerProfile},
+           {path:'messages',element:<Workerauthorize><Workermessages/></Workerauthorize> ,loader:workerProfile},
+           {path:"payment",element:<Workerauthorize><Workerpayment/></Workerauthorize> ,loader:workerProfile}
     ]},
       { path: 'modal', element: <Modal/> },
       {
         path: '/admin',
         children: [
-         { index: true, element: <Admindashboard /> },
-          { path: 'users', element: <Users />, loader: userList },
-          { path: 'auth', element: <AdminLogin /> },
-          { path: 'workerlist', element: <Workers />, loader: workerList },
-          { path: 'services', element: <AdminServices />, loader: serviceList },
-          { path: 'messages', element: <Messages />,loader: workerList },
-          {path:'category',element:<AddCategory/>},
-          {path:'booking',element:<Bookings/>}
+         { index: true, element: <Admin><Admindashboard /></Admin> },
+          { path: 'users', element:<Admin><Users /></Admin> , loader: userList },
+          { path: 'auth', element:<Adminlogin><AdminLogin /></Adminlogin>  },
+          { path: 'workerlist', element: <Admin><Workers /></Admin>,loader: workerList },
+          { path: 'services', element:<Admin><AdminServices /></Admin> , loader: serviceList },
+          { path: 'messages', element: <Admin><Messages /></Admin>,loader: workerList },
+          {path:'category',element:<Admin><AddCategory/></Admin>},
+          {path:'booking',element:<Admin><Bookings/></Admin>}
         ]
 
       }

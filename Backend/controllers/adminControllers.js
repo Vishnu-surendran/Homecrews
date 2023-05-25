@@ -24,7 +24,7 @@ const login = async (req, res) => {
 };
 
 const Allusers = async (req, res) => {
-  console.log(req.headers.authorization);
+
   try {
     const dbusers = await users.find({}).sort({ name: 1 });
     res.status(200).json(dbusers);
@@ -35,6 +35,7 @@ const Allusers = async (req, res) => {
 
 const blockUser = async (req, res) => {
   const userId = req.params.id;
+  console.log(userId)
   try {
     const finduser = await users.findById({ _id: userId });
     const status = !finduser.isBlocked;
@@ -51,7 +52,7 @@ const blockUser = async (req, res) => {
 const declineWorker = async (req, res) => {
   const { id } = req.params;
   const { status, message, warning } = req.body;
-  console.log(req.body);
+
   try {
     const response = await worker.findOneAndUpdate(
       { _id: id },
@@ -73,7 +74,7 @@ const approveWorker = async (req, res) => {
     )
     res.status(200).json({ message: "Approved worker" });
   } catch (error) {
-    console.log(error.message);
+   
     res.status(400).json({ message: "unable to process request" });
   }
 }

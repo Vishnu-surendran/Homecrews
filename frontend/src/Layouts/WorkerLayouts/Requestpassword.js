@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import {useForm} from 'react-hook-form'
 import Modal from '../Modal'
+import { Baseurl } from '../../Baseurl/Basurl'
 function Requestpassword() {
   const navigate = useNavigate()
   const{register,handleSubmit,formState:{errors}}=useForm()
@@ -10,7 +11,7 @@ const [modal, setmodal] = useState(false)
   const onSubmit =async  (data) => {
 
 const findEmail=async()=>{
-    const response=await axios.post("/api/workers/requestlink",data)
+    const response=await axios.post(`${Baseurl}/api/workers/requestlink`,data)
     return response.data
 }
 const datas=await findEmail()

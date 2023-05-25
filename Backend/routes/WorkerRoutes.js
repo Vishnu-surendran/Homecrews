@@ -1,5 +1,5 @@
 const express=require("express")
-const {addDuty,cancelOrder,passwordRequest,getbookings,resetPassword,reapplication,register,loginWorker,singleWorker,editProfile,resendOtp,otpVerification}=require("../controllers/Workercontrollers")
+const {Chat,getAllmessages,addDuty,cancelOrder,passwordRequest,getbookings,resetPassword,reapplication,register,loginWorker,singleWorker,editProfile,resendOtp,otpVerification}=require("../controllers/Workercontrollers")
 const router=express.Router()
 const multer=require("multer")
 const path=require("path")
@@ -34,5 +34,6 @@ router.post("/addDuty",addDuty)
 router.get("/bookings",getbookings)
 router.patch("/booking/cancel",cancelOrder)
 router.post("/reapply",reapplication)
-
+router.post("/message",Chat)
+router.get("/allmessages/:id",getAllmessages)
 module.exports=router

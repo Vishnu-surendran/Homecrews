@@ -2,12 +2,13 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { adminactions } from '../../store/store'
+import { Baseurl } from '../../Baseurl/Basurl'
 
 export function UseAdminlogin() {
     const navigate=useNavigate()
 const dispatch=useDispatch()
     const adminLogin=async(email,password)=>{
-        const response=await fetch('/api/admin/signin',{
+        const response=await fetch(`${Baseurl}/api/admin/signin`,{
             method:'POST',
            headers:{ 'Content-type':'application/json'},
             body:JSON.stringify({email,password})

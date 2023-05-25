@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {useDispatch} from "react-redux"
 import { useractions } from "../../store/store";
+import { Baseurl } from "../../Baseurl/Basurl";
 
 export const Signupcontext=()=>{
     const [Error, setError] = useState(null) 
@@ -9,7 +10,7 @@ export const Signupcontext=()=>{
     const dispatch=useDispatch()
     const signup=async(username,email,password,phone)=>{
         setError(null)
-        const response = await fetch("/api/user/register",{
+        const response = await fetch(`${Baseurl}/api/user/register`,{
             method:"POST",
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({username,email,password,phone})
@@ -21,7 +22,6 @@ export const Signupcontext=()=>{
             setError(json.error)  
         }
         if(response.ok){
-
             dispatch(useractions.login(json))
             localStorage.setItem("user",JSON.stringify(json))
             setLoading(true)

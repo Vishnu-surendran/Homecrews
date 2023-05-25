@@ -4,8 +4,9 @@ import Modal from "../Modal"
 import { useLoaderData } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
-import Datas from "../Adminlayouts/Dashboard/datas"
+import Workergraph from './Workergraph'
 import { workeractions } from '../../store/store'
+import { Baseurl } from '../../Baseurl/Basurl'
 function Workerstatus() {
    const profiles=useLoaderData()
    const dispatch=useDispatch()
@@ -26,7 +27,7 @@ function Workerstatus() {
     
  const Reapply=async()=>{
 try{
-   const response=await axios.post(`/api/workers/reapply`,{message:"I have fixed all my issues"},{headers:{"Authorization":`Bearer ${worker.token}`}})
+   const response=await axios.post(`${Baseurl}/api/workers/reapply`,{message:"I have fixed all my issues"},{headers:{"Authorization":`Bearer ${worker.token}`}})
 setprofile(response.data)
 }catch(error){
 
@@ -46,7 +47,10 @@ setprofile(response.data)
                         <div class="overflow-x-auto rounded-lg ">
                            <div class="align-middle inline-block min-w-full">
                               <div class=" flex flex-col justify-evenly   items-center space-y-7 shadow overflow-hidden sm:rounded-lg border">
-                          {!profile.isApproved && !profile.warning && !profile.applicationstatus && (
+    {profiles && (
+<>
+
+{!profile.isApproved && !profile.warning && !profile.applicationstatus && (
  <>
  <h1 className='text-center text-2xl font-bold text-red-700'>You are not Approved</h1>
     <h1 className='text-center text-1xl font-bold'>Wait for the admin approval</h1>
@@ -66,7 +70,7 @@ setprofile(response.data)
                            </>
                           )}
 
-{profile.isApproved && profiles.works.length==0 && !duty&&(
+{profile.isApproved && profiles?.works?.length==0 && !duty&&(
                            <> <h1 className='text-center text-2xl font-bold '>Start your duty</h1>
 
                            </>
@@ -74,13 +78,19 @@ setprofile(response.data)
    
 
   {profiles.works.length>=1 && profile.isApproved &&(<>
-   <Datas className="h-96"/>
+   <Workergraph className="h-96"/>
         
     </>)}
      {profiles.works.length==0 && profile.isApproved && duty && (<>
     
       <h1 className='text-2xl text-green-600 font-bold'>Your payment status will show here when someone hires you</h1>  
        </>)}
+
+</>
+
+
+
+    )}
     
     
                               </div>

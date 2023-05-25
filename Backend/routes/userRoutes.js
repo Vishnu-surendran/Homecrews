@@ -3,7 +3,7 @@ const express=require('express')
 const router=express.Router()
 const {authorize}=require("../middlewares/authorization")
 const {allServices}=require('../controllers/serviceControllers')
-const {workerfetch,cancelOrder,paymentverify,keyGet,payment,book,Bookings,userProfile,updateProfile,loginUser,registerUser,passwordRequest,resetPassword,otpVerification,resendOtp} =require('../controllers/userControllers')
+const {getDate,Chat,getAllmessages,workerfetch,cancelOrder,paymentverify,keyGet,payment,book,Bookings,userProfile,updateProfile,loginUser,registerUser,passwordRequest,resetPassword,otpVerification,resendOtp} =require('../controllers/userControllers')
 
 router.post('/register',registerUser)
 
@@ -27,4 +27,8 @@ router.get("/getkey",keyGet)
 router.patch("/cancel",cancelOrder)
 router.get("/profile",userProfile)
 router.patch("/profile/update/",updateProfile)
+router.post("/message",Chat)
+router.get("/allmessages/:id",getAllmessages)
+
+router.get("/getdate",getDate)
 module.exports=router

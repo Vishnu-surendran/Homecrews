@@ -4,11 +4,15 @@ const schema=mongoose.Schema
 
 
 const Messageschema=new schema({
-workerid:{
+bookingid:{
     type:String,
     required:true
 },Message:{type:String,
 required:true
+},
+Author:{
+    type:String,
+    required:true
 }
 })
 

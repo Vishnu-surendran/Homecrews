@@ -8,6 +8,7 @@ import Footer from '../../../Components/Footer/Footer'
 
 import bg from '../../../assets/banner.jpg'
 import Navbarpage from '../Navbar/navbarpage'
+import { Link } from 'react-router-dom'
 function Homepage() {
   return (
     <div className=''>
@@ -19,13 +20,12 @@ function Homepage() {
         <div className=' absolute top  md:absolute pt-16 space-y-1 left-10 top-28 flex flex-col'>
           <h1 className='text-2xl text-white font-bold md:text-5xl'>Exquisite Home</h1>
           <h1 className='text-2xl text-white md:text-5xl font-bold'>Service</h1>
-          <button className=' py-0 px-0 md:py-2 px-1 hover:text-white hover:border-white'>Hire Now</button>
+          <Link to="/services" className=' py-0 px-0 md:py-2 px-1 hover:text-white hover:border-white'>Hire Now</Link>
         </div>
       </div>
 
 
       <Services />
-      <About />
       <Workers />
       <Footer />
 

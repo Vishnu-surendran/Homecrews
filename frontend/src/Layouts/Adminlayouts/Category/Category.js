@@ -7,6 +7,7 @@ import { adminactions } from '../../../store/store'
 import {TrashIcon,PencilIcon} from "@heroicons/react/outline"
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { Baseurl } from '../../../Baseurl/Basurl'
 
 function AddCategory() {
 const dispatch=useDispatch()
@@ -20,7 +21,7 @@ useEffect(() => {
  const categories=async()=>{
   const category=async()=>{
   
-     const response=await axios.get(`/api/admin/category`,{ headers: { "Authorization": `Bearer ${admintt}` } })
+     const response=await axios.get(`${Baseurl}/api/admin/category`,{ headers: { "Authorization": `Bearer ${admintt}` } })
      return response.data     
      }
 
@@ -39,7 +40,7 @@ const cancel=()=>{
 
   const unlist=async(id)=>{
 try{
-const response=await axios.patch("/api/admin/category",{id},{ headers: { "Authorization": `Bearer ${admintt}` } })
+const response=await axios.patch(`${Baseurl}/api/admin/category`,{id},{ headers: { "Authorization": `Bearer ${admintt}` } })
 dispatch(adminactions.unlistcategory(id))
 }catch(error){
 
@@ -59,7 +60,7 @@ seteditcategory(category)
   const updateCategory=async(e)=>{
     e.preventDefault()
     try{
-       const response=await axios.patch("/api/admin/category/edit",{id:editcategory._id,name:category},{ headers: { "Authorization": `Bearer ${admintt}` } })
+       const response=await axios.patch(`${Baseurl}/api/admin/category/edit`,{id:editcategory._id,name:category},{ headers: { "Authorization": `Bearer ${admintt}` } })
        dispatch(adminactions.editcategory({id:editcategory._id,name:category}))
     dispatch(adminactions.Loadingstate(false))
     seteditcategory(null)

@@ -4,24 +4,43 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLoaderData } from 'react-router-dom'
 import { workeractions } from '../../store/store'
+
+import {io} from "socket.io-client"
+import Chat from '../Userlayouts/Chatlayout/Chat'
+import Modal from '../Modal'
+import Workerchat from './workerchat'
+import { Baseurl } from '../../Baseurl/Basurl'
 function Workerduty() {
     const duties=useLoaderData()
     const dispatch=useDispatch()
 const [bookings, setbookings] = useState(null)
-    const {worker,booking}=useSelector((state)=>state.workerAuth)
+const [connection, setconnection] = useState(null)
+    const {worker,booking,isLoading}=useSelector((state)=>state.workerAuth)
+ 
 useEffect(() => {
   
    const getbookings=async()=>{
-      const response=await axios.get(`/api/workers/bookings`,{headers:{"Authorization":`Bearer ${worker.token}`}})
+      const response=await axios.get(`${Baseurl}/api/workers/bookings`,{headers:{"Authorization":`Bearer ${worker.token}`}})
 setbookings(response.data)
    }
 
 getbookings()
 }, [])
 
+
+
+const chatModal=(userid)=>{
+   dispatch(workeractions.beginchat(userid))
+   dispatch(workeractions.loading(true))
+  /*  const socket=io.connect("http://localhost:4000/")
+   socket.emit("join connection",userid) */
+ /*   setconnection(socket) */
+   }
+
+
 const cancel=async(id)=>{
    try{
-       const response=await axios.patch("/api/workers/booking/cancel",{id:id},{ headers: { "Authorization": `Bearer ${worker.token}` } })
+       const response=await axios.patch(`${Baseurl}/api/workers/booking/cancel`,{id:id},{ headers: { "Authorization": `Bearer ${worker.token}` } })
        setbookings(response.data)
    }catch(error){
 console.log(error)
@@ -98,7 +117,7 @@ console.log(error)
          
  {bookings ?  <> <div class={`relative  group bg-zinc-300 transition hover:z-[1] hover:shadow-2xl`}>
  
- {bookings.map((data)=>{
+ {bookings?.map((data)=>{
 return<div class="relative p-8 space-y-8">
 <div className="flex justify-between">
 <div className="flex space-x-4">
@@ -113,6 +132,8 @@ return<div class="relative p-8 space-y-8">
 <p class="text-sm text-gray-600">To:{data.to}</p>
 <p class="text-sm text-gray-600">Payment Type:{data.payment}</p>
 {data.bookingstatus ? <p class="text-sm text-green-600">Booking Status :Booked</p> : <p class="text-sm text-red-600">Booking Status : Cancelled</p> }
+
+<button type='button' className='px-4 py-0 bg-red-600 border-red-600 hover:bg-white hover:text-red-600' onClick={()=>chatModal(data._id)}>Chat</button>
 {data.bookingstatus &&(<button onClick={()=>cancel(data._id)} className='bg-red-600 text-white border-red-600 px-2 py-1'>Cancel</button>) }
 </div>
 </div>
@@ -126,7 +147,10 @@ return<div class="relative p-8 space-y-8">
         </div>
     </div>
 </div>
-                
+{isLoading && (
+<Workerchat/>
+
+                     )}
 
                      
                   </div>

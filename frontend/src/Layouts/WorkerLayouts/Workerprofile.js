@@ -5,6 +5,7 @@ import { useLoaderData } from 'react-router-dom'
 import axios from 'axios'
 import Modal from '../Modal'
 import { workeractions } from '../../store/store'
+import { Baseurl } from '../../Baseurl/Basurl'
 function Workerprofile() {
   
 const profiles=useLoaderData()
@@ -37,7 +38,7 @@ const submit=async(e)=>{
   formData.append('email',email)
   formData.append('job',job)
   try{
-    const response=await axios.post(`/api/workers/editprofile`,formData,{headers:{"Authorization":`Bearer ${worker.token}`}})
+    const response=await axios.post(`${Baseurl}/api/workers/editprofile`,formData,{headers:{"Authorization":`Bearer ${worker.token}`}})
 setprofile(response.data)
     setisLoading(true)
   }catch(error){

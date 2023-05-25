@@ -1,13 +1,19 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {useForm} from 'react-hook-form'
+
 import axios from 'axios'
+import { Baseurl } from '../../Baseurl/Basurl'
+import { useDispatch } from 'react-redux'
+import { workeractions } from '../../store/store'
 function Workerlogin() {
     const navigate = useNavigate()
+    const dispatch=useDispatch()
     const{register,handleSubmit,formState:{errors}}=useForm()
     const onSubmit =async(data) => {
         const submit=async()=>{
-        const response=await axios.post("/api/workers/login",data)
+        const response=await axios.post(`${Baseurl}/api/workers/login`,data)
+        dispatch(workeractions.login(response.data))
         navigate("/worker")
         return response.data
         }
@@ -40,7 +46,7 @@ function Workerlogin() {
                     <p className='text-red-800'> {errors.password?.message}</p>  
                     <input type="submit" className="w-full text-white bg-navcolor hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"/>
                     <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                        Don’t have an account yet? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500" onClick={() => navigate('/workerregister')}>Register</a>
+                        Don’t have an account yet? <Link to="/workerregister" className="font-medium text-primary-600 hover:underline dark:text-primary-500" onClick={() => navigate('/workerregister')}>Register</Link>
                         {Error}
                     </p>
                 </form>

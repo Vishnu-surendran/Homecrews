@@ -9,6 +9,7 @@ import Navbarpage from '../Navbar/navbarpage'
 import Modal from '../../Modal'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { Baseurl } from '../../../Baseurl/Basurl'
 function Serviceworkers() {
 const dispatch=useDispatch()
 const workers=useLoaderData()
@@ -40,11 +41,11 @@ useEffect(() => {
      
         try{
          
-          const response = await axios.get("/api/user/profile/",{ headers: { "Authorization": `Bearer ${tokens}` } })
+          const response = await axios.get(`${Baseurl}/api/user/profile/`,{ headers: { "Authorization": `Bearer ${tokens}` } })
   
           
         }catch(error){
-          console.log(error);
+      
           return {error:error.response.data}
         }
       }
@@ -68,24 +69,24 @@ const handleToken=async()=>{
         const {tokens}=JSON.parse(user)
         try{
         
-            const {data:{order}} = await axios.post("/api/user/book/",{payment:mode,wid:wid,address:address,from:fromdate,to:todate},{ headers: { "Authorization": `Bearer ${tokens}` } })
-            console.log();
-            const {data:{key}} = await axios.get("/api/user/getkey",{ headers: { "Authorization": `Bearer ${tokens}` } })
+            const {data:{order}} = await axios.post(`${Baseurl}/api/user/book/`,{payment:mode,wid:wid,address:address,from:fromdate,to:todate},{ headers: { "Authorization": `Bearer ${tokens}` } })
+         
+            const {data:{key}} = await axios.get(`${Baseurl}/api/user/getkey`,{ headers: { "Authorization": `Bearer ${tokens}` } })
          
             const options = {
                 key, // Enter the Key ID generated from the Dashboard
                 amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 currency: "INR",
-                name: "Acme Corp",
+                name: "HomeCrews",
                 description: "Test Transaction",
                 image: "https://example.com/your_logo",
                 order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                 handler: async function (response){
                     try{
-                        const paymentcerify = await axios.post("/api/user/paymentverification",{razorpay_payment_id:response.razorpay_payment_id,razorpay_order_id:response.razorpay_order_id,razorpay_signature:response.razorpay_signature},{ headers: { "Authorization": `Bearer ${tokens}` } })
+                        const paymentcerify = await axios.post(`${Baseurl}/api/user/paymentverification`,{razorpay_payment_id:response.razorpay_payment_id,razorpay_order_id:response.razorpay_order_id,razorpay_signature:response.razorpay_signature},{ headers: { "Authorization": `Bearer ${tokens}` } })
                        
                         setresponse("success")
-                     console.log(paymentcerify)
+                  
                     }catch(error){
 setresponse("failed")
                     }
@@ -108,7 +109,7 @@ setresponse("failed")
           }catch(error){
             console.log(error)  
           } 
-       console.log(window)
+   
             }
 
             const offlinesubmit=async()=>{
@@ -116,7 +117,7 @@ setresponse("failed")
                 const {tokens}=JSON.parse(user)
                 try{
          
-                    const response = await axios.post("/api/user/book/",{address:address,wid:wid,payment:mode},{ headers: { "Authorization": `Bearer ${tokens}` } })
+                    const response = await axios.post(`${Baseurl}/api/user/book/`,{address:address,wid:wid,payment:mode},{ headers: { "Authorization": `Bearer ${tokens}` } })
                 
                  console.log(response.data);
                  
@@ -201,15 +202,7 @@ setresponse("failed")
             Online
             </label>
         </div>
-        <div class="flex items-center mb-6">
-            <input id="country-option-3" type="radio" name="countries" value="offline" onChange={(e)=>setmode(e.target.value)} class="h-4 w-4 border-gray-300 focus:ring-2 focus:ring-blue-300" aria-labelledby="country-option-2" aria-describedby="country-option-2"/>
-            <label for="country-option-3" class="text-sm font-medium text-gray-900 ml-2 block">
-            Offline
-            </label>
-         
-        
-
-        </div>
+       
         <label className='font-bold mt-4'>Select Shift</label>
         <div class="flex items-center mt-4 mb-4">
         <label for="country-option-2" class="text-sm font-medium text-gray-900 ml-2 block mr-4">
@@ -225,12 +218,16 @@ setresponse("failed")
  <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Your Address</label>
 <textarea id="message" rows="4" onChange={(e)=>setaddress(e.target.value)} class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your address"></textarea>
  </div>
-       
-       
-        {mode==="offline" ?  <button className='ml-36 px-4 py-2' onClick={offlinesubmit}>Book now</button> :
-         <button type='button' className='ml-36 px-4 bg-indigo-800 py-2'
+<div className='flex justify-between'>
+<button type='button' className='ml-36 px-2 bg-indigo-800 py-2'
       onClick={handleToken}
-        >Pay n</button> }
+      
+        >Pay now</button>  <button type='button' className='ml-36 px-4 bg-indigo-800 py-2'
+        onClick={()=> dispatch(useractions.loading(false))}
+        
+          >Cancel</button>   
+</div>
+       
     </fieldset></>}
                     
                 </Modal>

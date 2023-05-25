@@ -5,6 +5,7 @@ import {Chart as ChartJS} from "chart.js/auto"
 
 
 import axios from 'axios'
+import { Baseurl } from '../../../Baseurl/Basurl'
 
 
 function Datas() { 
@@ -19,7 +20,7 @@ const [month, setmonth] = useState(null)
 useEffect(() => {
     let dates=[]
   const bookings=async()=>{
-    const response=await axios.get(`/api/admin/bookings`,{ headers: { "Authorization": `Bearer ${admintt}` } })
+    const response=await axios.get(`${Baseurl}/api/admin/bookings`,{ headers: { "Authorization": `Bearer ${admintt}` } })
     for(let i=1;i<=12;i++){
         const datas=response.data.filter((data)=>data.month===i)
     let date={month:i,count:datas.length}
@@ -30,7 +31,7 @@ dates.push(date)
 bookings()
  
 }, [])
-console.log(month?.map((data)=>data.count))
+
 
     const [chartdata, setchartdata] = useState({
         labels:["Jan","Feb","March","April","May","June","July","August","September","October","November","December"],

@@ -2,13 +2,14 @@ import React from 'react'
 import axios from 'axios'
 import {useForm} from "react-hook-form"
 import { useNavigate } from 'react-router-dom'
+import { Baseurl } from '../../../Baseurl/Basurl'
 
 function Userverify() {
   const {register,handleSubmit,formState:{errors}}=useForm()
 const navigate=useNavigate()
   const onSubmit=async(data)=>{
 const passwordRequest=async()=>{
-  const passwordFetch=await axios.post("/api/user/forgotpassword",{
+  const passwordFetch=await axios.post(`${Baseurl}/api/user/forgotpassword`,{
     email:data.email
   })
 

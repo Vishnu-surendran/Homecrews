@@ -5,6 +5,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { adminactions, ApproveWorker } from "../../../store/store";
 import Modal from '../../Modal';
 import axios from 'axios';
+import { Baseurl } from '../../../Baseurl/Basurl';
 function Messages() {
     const dispatch = useDispatch();
     const workerdata = useLoaderData();
@@ -33,7 +34,7 @@ const [message, setmessage] = useState("")
     const adminT = JSON.parse(admin)
     const admintt=adminT.adminToken
     try{
-        const response=await axios.patch("/api/admin/worker/"+workerid,{status:true,warning:reason,message},{ headers: { "Authorization": `Bearer ${admintt}` } })
+        const response=await axios.patch(`${Baseurl}/api/admin/worker/`+workerid,{status:true,warning:reason,message},{ headers: { "Authorization": `Bearer ${admintt}` } })
         dispatch(adminactions.setStatus({id:workerid,status:true,warning:reason,approval:false}))
         dispatch(adminactions.Loadingstate(false))
     }catch(error){

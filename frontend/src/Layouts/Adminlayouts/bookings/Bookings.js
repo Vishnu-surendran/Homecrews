@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AdminLayout from '../Layout/AdminLayout'
 import axios from 'axios'
+import { Baseurl } from '../../../Baseurl/Basurl'
 function Bookings() {
 const [bookings, setbookings] = useState(null)
 useEffect(() => {
@@ -8,11 +9,11 @@ useEffect(() => {
         const user=localStorage.getItem("Admin")
         const {adminToken}=JSON.parse(user)
         if (adminToken) {
-          const response = await axios.get("/api/admin/bookings", { headers: { "Authorization": `Bearer ${adminToken}` } })
+          const response = await axios.get(`${Baseurl}/api/admin/bookings`, { headers: { "Authorization": `Bearer ${adminToken}` } })
         setbookings(response.data)
         
         } if (!adminToken) {
-          console.log("jhhh");
+        
           return null
         }
     

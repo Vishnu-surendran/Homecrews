@@ -5,6 +5,9 @@ import { useractions } from '../../../store/store'
 import axios from 'axios'
 import Modal from '../../Modal'
 import Navbar from "../Navbar/navbarpage"
+import Chat from '../Chatlayout/Chat'
+import {io} from "socket.io-client"
+import { Baseurl } from '../../../Baseurl/Basurl'
 function Userprofile() {
 
     const data=useLoaderData()
@@ -13,8 +16,22 @@ const [name, setname] = useState("")
 const [email, setemail] = useState("")
 const [phone, setphone] = useState("")
 const [address, setaddress] = useState("")
-const [booking, setbookings] = useState(null)
+const [connection, setconnection] = useState(null)
+const [bookingid, setbookingid] = useState(null)
 const {profile,isLoading,bookings}=useSelector((state)=>state.userAuth)
+
+
+const chatModal=(userid,workerid)=>{
+dispatch(useractions.chatstart(userid))
+dispatch(useractions.loading(true))
+const socket=io.connect(Baseurl)
+const auth="user"
+socket.emit("join connection",userid,auth)
+setconnection(socket)
+}
+
+
+
     useEffect(() => {
   
     dispatch(useractions.profile(data))
@@ -22,7 +39,7 @@ const {profile,isLoading,bookings}=useSelector((state)=>state.userAuth)
         const user=localStorage.getItem("user")
         const {tokens}=JSON.parse(user)
     try{
-        const response = await axios.get("/api/user/bookings",{ headers: { "Authorization": `Bearer ${tokens}` } })
+        const response = await axios.get(`${Baseurl}/api/user/bookings`,{ headers: { "Authorization": `Bearer ${tokens}` } })
        
        dispatch(useractions.bookings(response.data))
       ;
@@ -37,7 +54,7 @@ const submit=async()=>{
     const user=localStorage.getItem("user")
     const {tokens}=JSON.parse(user)
 try{
-    const response = await axios.get("/api/user/profile/updat",{name:name,email:email,phone:phone,address:address},{ headers: { "Authorization": `Bearer ${tokens}` } })
+    const response = await axios.get(`${Baseurl}/api/user/profile/update`,{name:name,email:email,phone:phone,address:address},{ headers: { "Authorization": `Bearer ${tokens}` } })
     dispatch(useractions.profile(data))
     dispatch(useractions.loading(true))
 }catch(error){
@@ -50,7 +67,7 @@ const cancel=async(id)=>{
     const {tokens}=JSON.parse(user)
 
     try{
-        const response=await axios.patch("/api/user/cancel",{id:id},{ headers: { "Authorization": `Bearer ${tokens}` } })
+        const response=await axios.patch(`${Baseurl}/api/user/cance`,{id:id},{ headers: { "Authorization": `Bearer ${tokens}` } })
         dispatch(useractions.cnacelbooking(id))
     }catch(error){
 console.log(error)
@@ -148,7 +165,7 @@ console.log(error)
                            
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Contact No.</div>
-                                <input type="tel" onChange={(e)=>setphone(e.target.value)} className='px-4 py-2 border border-solid border-blue-500' defaultValue={profile?.phone}/>
+                                <input type="tel" onChange={(e)=>setphone(e.target.value)} className='px-4 py-2 border border-solid border-blue-500' defaultValue={profile?.Phone}/>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold"> Address</div>
@@ -166,9 +183,7 @@ console.log(error)
                     </div>
                     </form>
                    
-                    <button
-                        class="block w-full text-white text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
-                        Update Profile</button>
+                 
                 </div>
                
 
@@ -203,6 +218,7 @@ console.log(error)
                                       <div class="text-gray-500 text-sm">Total paid: {bookings.money}</div>
                                       <div class="text-gray-500 text-sm">Address :{bookings.address}</div>
                                   </li>
+                                  <div><button className='px-4 py-0 bg-red-600 border-red-600 hover:bg-white hover:text-red-600' onClick={()=>chatModal(bookings._id)}>Chat</button> </div>
                                   <div>{bookings.bookingstatus ? <button className='px-4 py-0 bg-red-600 border-red-600 hover:bg-white hover:text-red-600' onClick={()=>cancel(bookings._id)}>Cancel</button>:<h1 className='text-red-600'>Cancelled</h1>} </div>
                                  
                                   </div>
@@ -216,13 +232,10 @@ console.log(error)
                             )}
                             
                         </div>
-        {/*              {isLoading && (
-<Modal>
-    <h1>Profile updated Successfully</h1>
-    <button onClick={()=>dispatch(useractions.loading(false))}></button>
-</Modal>
+                     {isLoading && (
+<Chat socket={connection}/>
 
-                     )} */}
+                     )}
                     </div>
                   
                 </div>

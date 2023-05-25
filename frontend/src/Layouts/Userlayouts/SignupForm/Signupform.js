@@ -6,10 +6,11 @@ import Modal from "../../Modal"
 import {useSelector,useDispatch} from "react-redux"
 import axios from "axios";
 import { useractions } from "../../../store/store";
+import { Baseurl } from "../../../Baseurl/Basurl";
 function Signupform() {
   const { signup, Error ,isLoading,setLoading} = Signupcontext();
   const [countdown, setcountdown] = useState(59)
-  const timer=useRef()
+  const inputref=useRef({})
   const navigate = useNavigate();
 const dispatch=useDispatch()
 const [one,setone]=useState("")
@@ -53,9 +54,9 @@ const [seconds, setSeconds] = useState(59);
   
   const OtpVerify=async(e)=>{
    e.preventDefault()
-   const data=one.concat(two.concat(three.concat(four)))
+   const data=one
 const Otpverify=async()=>{
-  const response= await axios.post("/api/user/otpverify",{otp:data,id:user.user})
+  const response= await axios.post(`${Baseurl}/api/user/otpverify`,{otp:data,id:user.user})
   if(response.data){
     setLoading(false)
     navigate("/")
@@ -69,7 +70,7 @@ await Otpverify()
 const otp=async()=>{
   setMinutes(0);
   setSeconds(59);
-const  response=await axios.post("/api/user/resendotp",{id:user.user})
+const  response=await axios.post(`${Baseurl}/api/user/resendotp`,{id:user.user})
 if(response.data){
 dispatch(useractions.notification("Otp has been send to your mobile"))
 }
@@ -99,7 +100,7 @@ await otp()
               {...register("username",{required:"Username is required", minLength:{value:4,message:"Min length 4"}})}
                 
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
+                  placeholder="Enter your username"
                 
                 />
           <p className="text-red-700">{errors.username?.message}</p>
@@ -116,7 +117,7 @@ await otp()
                   name="email"
                   id="password"
              {...register("email",{required:"Email required" })}
-                  placeholder="••••••••"
+                  placeholder="Enter your email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 
                 />
@@ -133,7 +134,7 @@ await otp()
                   name="email"
                   id="password"
              {...register("phone",{required:"Phone required" })}
-                  placeholder="••••••••"
+                  placeholder="Enter your phone"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 
                 />
@@ -151,7 +152,7 @@ await otp()
                   name="password"
                   id="confirm-password"
                   {...register("password",{required:"Password Required",minLength:5})}
-                  placeholder="••••••••"
+                  placeholder="Enter yourpassword"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   
                 />
@@ -172,7 +173,7 @@ await otp()
                     const { password } = getValues();
                     return password === value || "Passwords should match!";
                   }})}
-                  placeholder="••••••••"
+                  placeholder="Confirm your password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   
                 />
@@ -220,28 +221,16 @@ await otp()
         <form onSubmit={OtpVerify}>
           <div class="flex flex-col space-y-16">
             <div class="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>setone(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700" />
-              </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>settwo(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>setthree(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>setfour(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
+              <div class="w-16 h-16 ">     
+               <input maxLength="4" onChange={(e)=>setone(e.target.value)}  type="tel"  class="w-80 h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700" />
+              </div>   
             </div>
 
             <div class="flex flex-col space-y-5">
               <div>
                 <input type="submit" class="flex flex-row items-center justify-center text-center w-full border rounded-xl outline-none py-5 bg-blue-700 border-none text-white text-sm shadow-sm"/>
               </div>
-          {/*     {console.log(errors.first?.message,"one")}
-              {console.log(errors.second?.message,"two")}
-              {console.log(errors.third?.message,"three")}
-              {console.log(errors.fourth?.message,"four")} */}
+    
                 <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
       {seconds > 0 || minutes > 0 ? (
         <p>

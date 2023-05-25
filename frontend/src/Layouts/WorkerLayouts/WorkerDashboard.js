@@ -8,6 +8,7 @@ import axios from 'axios'
 import { workeractions } from '../../store/store'
 import { useSelector,useDispatch } from 'react-redux'
 import { useNavigate,useLoaderData } from 'react-router-dom'
+import { Baseurl } from '../../Baseurl/Basurl'
 function WorkerDashboard({children,status}) {
  const data=useLoaderData()
 
@@ -24,14 +25,14 @@ function WorkerDashboard({children,status}) {
     const logout=()=>{
       localStorage.removeItem("worker")
       dispatch(workeractions.login(null))
-navigate("/worker/login")
+navigate("/workerlogin")
     }
 
     const duties=(e)=>{
       e.preventDefault()
       const submit=async()=>{
          try{
-            const response=await axios.post(`/api/workers/addDuty`,{timefrom:from,timeto:to,id:worker.id},{headers:{"Authorization":`Bearer ${worker.token}`}})
+            const response=await axios.post(`${Baseurl}/api/workers/addDuty`,{timefrom:from,timeto:to,id:worker.id},{headers:{"Authorization":`Bearer ${worker.token}`}})
             setmodal(false)  
        dispatch(workeractions.dutystatus(response.data))
          }catch(err){

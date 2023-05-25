@@ -1,5 +1,6 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit"
 import axios from "axios"
+import { Baseurl } from "../Baseurl/Basurl"
 
 const userAuth = {
     user: null,
@@ -9,7 +10,8 @@ const userAuth = {
     isLoading:false,
     workers:null ,
     profile:null,
-    bookings:null
+    bookings:null,
+    bookingid:null
 }
 
 const worker={
@@ -18,7 +20,9 @@ const worker={
     duty:null,
     notification:null,
     isLoading:false,
-    booking:null
+    booking:null,
+    bookingid:null,
+    connection:null
 }
 const adminAuth = {
     admin: null,
@@ -141,6 +145,9 @@ state.notification=action.payload
         },cnacelbooking(state,action){
             const booking=state.bookings.find((book)=>book._id===action.payload)
             booking.bookingstatus=false
+        },
+        chatstart(state,action){
+state.bookingid=action.payload
         }
      
     }
@@ -166,6 +173,10 @@ state.duty=action.payload
                     
                 },bookings(state,action){
 state.booking=action.payload
+                },beginchat(state,action){
+state.bookingid=action.payload
+                },connection(state,action){
+state.connection=action.payload
                 }
 }
 })
@@ -186,7 +197,7 @@ export const blockuser=(id)=>{
   const admintt=adminT.adminToken
 return async(dispatch)=>{
 const fetchdata=async()=>{
-    const response=await axios.get(`/api/admin/users/block/${id}`,{ headers: { "Authorization": `Bearer ${admintt}` } })
+    const response=await axios.get(`${Baseurl}/api/admin/users/block/${id}`,{ headers: { "Authorization": `Bearer ${admintt}` } })
     return response.data.status
 }
     const status=fetchdata()
@@ -201,7 +212,7 @@ export const blockWorker=(id)=>{
     const admintt=adminT.adminToken
     return async(dispatch)=>{
     const fetchdata=async()=>{
-        const response=await axios.get(`/api/admin/worker/block/${id}`,{ headers: { "Authorization": `Bearer ${admintt}` } })
+        const response=await axios.get(`${Baseurl}/api/admin/worker/block/${id}`,{ headers: { "Authorization": `Bearer ${admintt}` } })
         return response.data.status
     }
       const status=  await fetchdata()
@@ -215,7 +226,7 @@ export const blockWorker=(id)=>{
         const admintt=adminT.adminToken
         return async(dispatch)=>{
         const fetchdata=async()=>{
-            const response=await axios.patch("/api/admin/worker/approve",{id},{ headers: { "Authorization": `Bearer ${admintt}` } })
+            const response=await axios.patch(`${Baseurl}/api/admin/worker/approve`,{id},{ headers: { "Authorization": `Bearer ${admintt}` } })
             dispatch(adminactions.setStatus({id:id,status:false,warning:null,approval:true}))
             return response.data.status
         }
@@ -232,7 +243,7 @@ export const blockWorker=(id)=>{
         const submission=async()=>{
             try{
                 dispatch(adminactions.setError(null))
-                const response=await axios.post("/api/admin/services",data)
+                const response=await axios.post(`${Baseurl}/api/admin/services`,data)
                 dispatch(adminactions.Addservice(response.data))
                 dispatch(adminactions.Loadingstate(false))
             }catch(error){
@@ -251,7 +262,7 @@ dispatch(adminactions.setError(error.response.data))
             const admintt=adminT.adminToken
          const category=async()=>{
             try{
-                const response=await axios.post(`/api/admin/addcategory`,{data:data},{ headers: { "Authorization": `Bearer ${admintt}` } })
+                const response=await axios.post(`${Baseurl}/api/admin/addcategory`,{data:data},{ headers: { "Authorization": `Bearer ${admintt}` } })
                 dispatch(adminactions.AddCategory(response.data))
                 dispatch(adminactions.Loadingstate(false))
                 return response.data.status  

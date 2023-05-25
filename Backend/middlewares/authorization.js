@@ -6,7 +6,7 @@ const { response } = require("express");
 const adminAuthorize = async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
-   
+   console.log(authorization)
     return res.status(400).json({ error: "Unauthorized access" });
   }
   const token = authorization.split(" ")[1];

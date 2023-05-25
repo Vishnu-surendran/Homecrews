@@ -10,6 +10,7 @@ const twilio = require("twilio")(process.env.SID, process.env.AUTHTOKEN);
 const stripe=require("stripe")(process.env.SECRETKEY)
 const uuid=require("uuid").v4
 const crypto=require("crypto")
+const messageModel=require("../models/messageModel")
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
 };
@@ -23,7 +24,7 @@ var instance = new Razorpay({
 const loginUser = async (req, res) => {
 
   const { email, password } = req.body;
-  console.log(req.body);
+ 
   try {
     const userExist = await User.login(email, password);
     const tokens = createToken(userExist._id);
@@ -64,8 +65,8 @@ const registerUser = async (req, res) => {
     }
     main();
     const user = await User.signup(username, email, password, phone, otp);
-    const token = await createToken(user._id);
-    res.status(200).json({ token, user: user._id });
+    const tokens = await createToken(user._id);
+    res.status(200).json({ tokens, name: user.username,user:user._id });
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: "user not found" });
@@ -87,7 +88,7 @@ res.status(400).json({error:error.message})
 
 const resendOtp = async (req, res) => {
   const { id } = req.body;
-  console.log("id", id);
+
   const otp = otpGenerator.generate(4, {
     upperCaseAlphabets: false,
     specialChars: false,
@@ -132,7 +133,7 @@ const resendOtp = async (req, res) => {
 };
 
 const passwordRequest = async (req, res) => {
-  console.log(req.body);
+
   const { email } = req.body;
   try {
     const userexist = await User.findOne({ email: email });
@@ -180,7 +181,7 @@ const resetPassword = async (req, res) => {
 };
 
 const otpVerification = async (req, res) => {
-  console.log(req.body);
+
   const { otp, id } = req.body;
   try {
     const user = await User.findById({ _id: id });
@@ -249,7 +250,7 @@ res.status(400).json({message:"Unable to update"})
 const book=async(req,res)=>{
   const{payment}=req.body
   const id=req.user
-  console.log(req.user,"user");
+
 if(payment==="online") {
   const{payment,address,wid,from,to}=req.body
   try{
@@ -272,7 +273,7 @@ const userfind=await User.findById({_id:id})
    ,from:from,to:to,money:order.amount})
    const customerdetails=await User.findById({_id:id}) 
    function percentage(totalValue) {
-    console.log(totalValue);
+  
     return (100 * 10) / totalValue;
  } 
  
@@ -327,9 +328,7 @@ const Bookings=async(req,res)=>{
 
 try{
   const worker=await Booking.find({customerid:id})
-  console.log(worker);
-/* const response=await Booking.find({workerid:worker.workerid}).populate("workerid").exec()
-console.log(response); */
+
 res.status(200).json(worker)
 }catch(error){
 res.status(400).json(error.message)
@@ -384,6 +383,28 @@ res.status(400).json(error.message)
 
 }
 
+const Chat=async(req,res)=>{
+const {data:{room,Message,author}}=req.body
+try{
+const newMessage=await messageModel.create({bookingid:room,Message:Message,Author:author})
+res.status(200).json({messages:"message received"})
+}catch(error){
+  console.log(error.message)
+  res.status(400).json({messages:error.message})
+}
+}
+
+
+const getAllmessages=async(req,res)=>{
+const id=req.params.id
+try{
+const allMessages=await messageModel.find({bookingid:id})
+res.status(200).json(allMessages)
+}catch(error){
+  console.log(error.message)
+res.status(400).json({message:"No messages found"})
+}
+}
 
 
 const cancelOrder=async(req,res)=>{
@@ -396,12 +417,28 @@ res.status(400).json(error.message)
 }
 }
 
+const getDate=async(req,res)=>{
+
+  try{
+    const date=new Date()
+    const currentDate= date.now
+    
+    res.status(200).json(currentdate)
+  }catch(error){
+    res.status(401).json({message:error.message})
+  }
+ 
+
+}
+
+
 module.exports = {
+  getDate,
   loginUser,
   registerUser,
   passwordRequest,
   resetPassword,
   otpVerification,
   resendOtp,
-  workerfetch,userProfile,updateProfile,book,Bookings,payment,keyGet,paymentverify,cancelOrder
+  workerfetch,userProfile,updateProfile,book,Bookings,payment,keyGet,paymentverify,cancelOrder,getAllmessages,Chat
 };

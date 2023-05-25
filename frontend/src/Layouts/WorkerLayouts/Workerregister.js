@@ -7,6 +7,7 @@ import { workeractions } from "../../store/store";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Modal from ".././Modal"
 import axios from "axios";
+import { Baseurl } from "../../Baseurl/Basurl";
 function Workerregister() {
  /*  const { workerRegistration } = Loader(); */
  const services=useLoaderData()
@@ -30,10 +31,7 @@ const {worker,isLoading,notification}=useSelector((state)=>state.workerAuth)
   
 
   const onSubmit = async (data) => {
-   /*  const worker = await workerRegistration(data); */
-  /*   dispatch(workeractions.login(worker));
-    navigate("/worker"); */
-    console.log(data);
+ 
   
     const formData=new FormData()
    
@@ -50,7 +48,7 @@ const {worker,isLoading,notification}=useSelector((state)=>state.workerAuth)
     
     const submission=async ()=>{
       try{
-        const response=await axios.post("/api/workers/register",formData)
+        const response=await axios.post(`${Baseurl}/api/workers/register`,formData)
         localStorage.setItem("worker",JSON.stringify(response.data))
         dispatch(workeractions.login(response.data))
         dispatch(workeractions.loading(true))
@@ -94,9 +92,9 @@ const {worker,isLoading,notification}=useSelector((state)=>state.workerAuth)
    const worker = localStorage.getItem('worker')
   
    const workerT=JSON.parse(worker)
-   const data=one.concat(two.concat(three.concat(four)))
+   const data=one
 const Otpverify=async()=>{
-  const response= await axios.post("/api/workers/otpverify",{otp:data,id:workerT.id})
+  const response= await axios.post(`${Baseurl}/api/workers/otpverify`,{otp:data,id:workerT.id})
   if(response.data){
     dispatch(workeractions.loading(false))
     navigate("/workerlogin")
@@ -112,8 +110,8 @@ const otp=async()=>{
   setSeconds(59);
   const worker = localStorage.getItem('worker')
   const workerT=JSON.parse(worker)
-  console.log(workerT,"KL");
-const  response=await axios.post("/api/workers/resendotp",{id:workerT.id})
+
+const  response=await axios.post(`${Baseurl}/api/workers/resendotp`,{id:workerT.id})
 if(response.data){
 dispatch(workeractions.notification("Otp has been send to your mobile"))
 }
@@ -325,27 +323,16 @@ await otp()
           <div class="flex flex-col space-y-16">
             <div class="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
               <div class="w-16 h-16 ">
-               <input onChange={(e)=>setone(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700" />
+               <input maxLength="4" onChange={(e)=>setone(e.target.value)}  type="tel"class="w-80 h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700" />
               </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>settwo(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>setthree(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
-              <div class="w-16 h-16 ">
-               <input onChange={(e)=>setfour(e.target.value)}  type="tel"  class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"/>
-              </div>
+          
             </div>
 
             <div class="flex flex-col space-y-5">
               <div>
                 <input type="submit" class="flex flex-row items-center justify-center text-center w-full border rounded-xl outline-none py-5 bg-blue-700 border-none text-white text-sm shadow-sm"/>
               </div>
-          {/*     {console.log(errors.first?.message,"one")}
-              {console.log(errors.second?.message,"two")}
-              {console.log(errors.third?.message,"three")}
-              {console.log(errors.fourth?.message,"four")} */}
+      
                 <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
       {seconds > 0 || minutes > 0 ? (
         <p>

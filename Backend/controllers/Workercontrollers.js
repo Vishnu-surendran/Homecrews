@@ -8,13 +8,14 @@ const messages=require("../models/messageModel")
 const Booking=require("../models/Bookingmodel")
 const bcrypt=require("bcrypt");
 const Response = require("twilio/lib/http/response");
+const messageModel=require("../models/messageModel")
 const Bookingmodel = require("../models/Bookingmodel");
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
 };
 
 const register = async (req, res) => {
-  console.log(req.body)
+
   const { name, email, password, age, gender, job, phone,service,address } = req.body;
  
   const otp = otpGenerator.generate(4, {
@@ -66,7 +67,7 @@ const register = async (req, res) => {
 };
 
 const resendOtp = async (req, res) => {
-  console.log(req.body);
+
   const { id } = req.body;
   const otp = otpGenerator.generate(4, {
     upperCaseAlphabets: false,
@@ -136,13 +137,13 @@ const allWorkers = async (req, res) => {
 };
 
 const singleWorker = async (req, res) => {
-  console.log("1");
+
   const singleWorker = await worker.findById({ _id: req.Worker });
   res.status(200).json(singleWorker);
 };
 
 const editProfile = async (req, res) => {
-  console.log(req.body);
+
   const { name, email, phone, age, job, address, about } = req.body;
   try {
     const response = await worker.updateOne(
@@ -288,8 +289,8 @@ const workerid=id.toString()
 
 
 try{
-const response= await Booking.find({customerid:"64001a74e73cd7daba3f2f75"})
-console.log(response);
+const response= await Booking.find({workerid:workerid})
+
 res.status(200).json(response)
 }catch(error){
 res.status(400).json(error.message)
@@ -310,7 +311,29 @@ const cancelOrder=async(req,res)=>{
   }
   }
   
-
+  const Chat=async(req,res)=>{
+    const {data:{room,Message,author}}=req.body
+    try{
+    const newMessage=await messageModel.create({bookingid:room,Message:Message,Author:author})
+    res.status(200).json({messages:"message received"})
+    }catch(error){
+      console.log(error.message)
+      res.status(400).json({messages:error.message})
+    }
+    }
+    
+    
+    const getAllmessages=async(req,res)=>{
+    const id=req.params.id
+    try{
+    const allMessages=await messageModel.find({bookingid:id})
+    res.status(200).json(allMessages)
+    }catch(error){
+      console.log(error.message)
+    res.status(400).json({message:"No messages found"})
+    }
+    }
+    
 
 
 module.exports = {
@@ -323,5 +346,5 @@ module.exports = {
   singleWorker,
   editProfile,
   resendOtp,
-  otpVerification,reapplication,resetPassword,passwordRequest,getbookings,cancelOrder
+  otpVerification,reapplication,resetPassword,passwordRequest,getbookings,cancelOrder,getAllmessages,Chat
 };

@@ -12,7 +12,7 @@ const dispatch=useDispatch()
 const service=useLoaderData()
 const navigate=useNavigate()
 const {services,isLoading,notification}= useSelector((state)=>state.userAuth)
-console.log(services);
+
 useEffect(() => {
     if(service.error){
         dispatch(useractions.loading(true))
@@ -32,7 +32,7 @@ useEffect(() => {
                 <img className=' absolute mt-20 opacity-20 w-full h-full object-cover' src={banner} />
                 <div className=' pt-60 md:pt-60 flex flex-col justify-between items-center'>
                     <h1 className='text-black text-3xl md:text-5xl font-bold'>Services</h1>
-                    <p>hihjnoidsklkjsdfhnkjlfdnjksdfnkjd</p>
+                  
                 </div>
             </div>
             <div>

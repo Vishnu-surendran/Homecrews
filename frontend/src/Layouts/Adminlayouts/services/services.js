@@ -8,6 +8,7 @@ import AdminLayout from "../Layout/AdminLayout";
 import AddService from "../Add a service/addService";
 import AddCategory from "../Category/Category";
 import axios from "axios";
+import { Baseurl } from "../../../Baseurl/Basurl";
 function AdminServices() {
     const [modal, setmodal] = useState(false)
     const [editservice,seteditservice]=useState("")
@@ -22,7 +23,7 @@ useEffect(() => {
       const admin=localStorage.getItem("Admin")
       const adminT = JSON.parse(admin)
       const admintt=adminT.adminToken
-      const response=await axios.get(`/api/admin/category`,{ headers: { "Authorization": `Bearer ${admintt}` } })
+      const response=await axios.get(`${Baseurl}/api/admin/category`,{ headers: { "Authorization": `Bearer ${admintt}` } })
       return response.data     
       }
    const allCategory= await category()
@@ -33,7 +34,7 @@ useEffect(() => {
 
 const unlistService=async(id)=>{
    try{
-      const response=await axios.patch("/api/admin/services/unlist/"+id)
+      const response=await axios.patch(`${Baseurl}/api/admin/services/unlist/`+id)
       dispatch(adminactions.Unlistservice(id))
    }catch(error){
 console.log(error)
@@ -49,7 +50,7 @@ dispatch(adminactions.Loading(true))
 
 const updateService=async(data)=>{
 try{
-   const response=await axios.patch("/api/admin/services/" + editservice._id,data)
+   const response=await axios.patch(`${Baseurl}/api/admin/services/` + editservice._id,data)
    dispatch(adminactions.editservices({id:editservice._id,data:data}))
 dispatch(adminactions.Loading(false))
 }catch(error){
@@ -93,7 +94,7 @@ let adminState=false
  return <> <div class={`relative  group ${service.isUnlisted ?  "bg-zinc-300":"bg-white"} transition hover:z-[1] hover:shadow-2xl`}>
  <div class="relative p-8 space-y-8">
          <div className="flex justify-between">
-    <img src={`http://localhost:4000/images//serviceImages//${service.image}`} class="w-10" width="512" height="512" alt="burger illustration"/>
+    <img src={`https://homecrew.onrender.com/images/serviceImages/${service.image}`} class="w-10" width="512" height="512" alt="burger illustration"/>
    <div className="flex space-x-4">
   { !service.isUnlisted && (<><Link> <PencilIcon className="w-5" onClick={()=>editService(service._id)}/></Link>
  <Link><TrashIcon className="w-5" onClick={()=>unlistService(service._id)}/></Link>  </>)}

@@ -5,6 +5,7 @@ const categoryModel = require("../models/categoryModel");
 
 //GET all services
 const allServices = async (req, res) => {
+
   const services = await Service.find({}).sort({ createdAt: -1 });
   res.status(200).json(services);
 };
@@ -40,7 +41,7 @@ const createService = async (req, res) => {
       image: req.file.filename,
       isUnlisted: null,
     });
-    console.log(service);
+   
     res.status(200).json(service);
    
  
@@ -53,10 +54,10 @@ const createService = async (req, res) => {
 //Update service
 const updateService = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body);
+
   const{name,experience,category,description}=req.body
 
-  console.log(experience);
+;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ err: "no such workouts" });
   }
@@ -106,7 +107,7 @@ const addCategory = async (req, res) => {
       throw new Error("Category already exist")
     }
     const response = await categoryModel.create({ name: name ,isUnlisted:false});
-    console.log(response);
+  
     res.status(200).json(response);
   } catch (err) {
     res.status(400).json(err.message);
@@ -150,7 +151,7 @@ const deleteCategory = async (req, res) => {
   const {id}=req.params
   try {
     const response = await categoryModel.deleteOne({_id:id})
-    console.log(response);
+
     res.status(200).json(response);
   } catch (err) {
     res.status(400).json({ err: "Could not delete category" });

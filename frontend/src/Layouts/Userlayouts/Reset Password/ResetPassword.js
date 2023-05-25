@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import {useForm} from 'react-hook-form'
 import Modal from '../../Modal'
+import { Baseurl } from '../../../Baseurl/Basurl'
 function Resetpassword() {
   const navigate = useNavigate()
   const {id}=useParams()
@@ -10,7 +11,7 @@ function Resetpassword() {
 const [modal, setmodal] = useState(false)
   const onSubmit =async  (data) => {
 const findEmail=async()=>{
-    const response=await axios.post("/api/user/resetpassword",{password:data.password,id:id})
+    const response=await axios.post(`${Baseurl}/api/user/resetpassword`,{password:data.password,id:id})
     return response.data
 }
 const datas=await findEmail()
